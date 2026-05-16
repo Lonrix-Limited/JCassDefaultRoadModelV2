@@ -264,7 +264,7 @@ public class RoadNetworkModel : DomainModelBase
             RoadSegment segment = RoadSegmentFactory.GetFromModel(this.model, numInputs, textInputs, numModParamValues, textModParamValues, iElemIndex, iPeriod);
             segment.UpdateFormulaValues(this.model, this, iPeriod, infoFromModel);  //Immediately update the formula values for the segment
 
-            return RoutineMaintenance.GetRoutineMaintenance(segment, iPeriod);
+            return RoutineMaintenance.GetRoutineMaintenance(segment, iPeriod, model.Lookups);
 
         }
         catch (Exception ex)

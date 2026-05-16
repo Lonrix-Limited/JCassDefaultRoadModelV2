@@ -13,6 +13,7 @@ public class TreatmentsTrigger
 {
     private ModelBase _frameworkModel;
     private RoadNetworkModel _domainModel;
+    Dictionary<string, object> _unitRateSet;
 
     public TreatmentsTrigger(ModelBase frameworkModel, RoadNetworkModel domainModel)
     {
@@ -21,11 +22,8 @@ public class TreatmentsTrigger
     }
 
     public List<TreatmentInstance> GetTriggeredTreatments(RoadSegment segment, int period, Dictionary<string, object> infoFromModel)
-    {
-        if (segment.ElementIndex == 3 && period == 13)
-        {
-            int kk = 0;
-        }
+    {     
+        _unitRateSet = _frameworkModel.Lookups["unit_rate_set"] as Dictionary<string, object>;
 
         List<TreatmentInstance> triggeredTreatments = new List<TreatmentInstance>();
 
@@ -150,7 +148,12 @@ public class TreatmentsTrigger
         //If we get here, a birthday treatment is valid
         double quantity = segment.AreaSquareMetre;
         bool forceTreatment = true;
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, forceTreatment,  "Birthday treatment", "");
+
+        
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, unitRate, forceTreatment,  "Birthday treatment", "");
         treatment.TreatmentSuitabilityScore = 102; // Set a high suitability score for second coat treatments
         treatments.Add(treatment);
 
@@ -170,7 +173,12 @@ public class TreatmentsTrigger
         treatmentName = "ChipSeal_H";
         reason = "Pre-seal follow-up";
         double quantity = segment.AreaSquareMetre;
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, true, reason, comment);
+
+        
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, unitRate, true, reason, comment);
         treatment.TreatmentSuitabilityScore = 102;  //fixed high score to force this treatment to be selected if it is valid
         treatments.Add(treatment);
     }
@@ -181,7 +189,14 @@ public class TreatmentsTrigger
         if (segment.SecondCoatNeeded)
         {
             double quantity = segment.AreaSquareMetre;
-            TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, "ChipSeal_S", iPeriod, quantity, true, "Second coat", "Second coat");
+
+            string treatmentName = "ChipSeal_S";
+
+            if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+            double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
+            TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: quantity, unitRate: unitRate, 
+                                                                true, "Second coat", "Second coat");
             treatment.TreatmentSuitabilityScore = 102; // Set a high suitability score for second coat treatments
             treatments.Add(treatment);
         }
@@ -208,8 +223,12 @@ public class TreatmentsTrigger
         string reason = $"SLA={Math.Round(segment.SurfaceAchievedLifePercent, 1)}";
         string comment = $"SDI={Math.Round(sdi, 1)}, TSS={Math.Round(tssScore, 2)}";
 
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
         double quantity = segment.AreaSquareMetre;
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity,false, reason, comment);
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: quantity, unitRate: unitRate, 
+                                                            false, reason, comment);
         treatment.TreatmentSuitabilityScore = tssScore;
         treatments.Add(treatment);
     }
@@ -240,9 +259,13 @@ public class TreatmentsTrigger
         string reason = $"SLA={Math.Round(segment.SurfaceAchievedLifePercent, 1)}";
         string comment = $"SDI={Math.Round(sdi, 1)}, TSS={Math.Round(tssScore, 2)}";
         
-        double overlayQuantity = segment.AreaSquareMetre;                        
-                                       
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, overlayQuantity, false, reason, comment);
+        double overlayQuantity = segment.AreaSquareMetre;
+
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: overlayQuantity, unitRate:unitRate,
+                                                            false, reason, comment);
         
         treatment.TreatmentSuitabilityScore = tssScore;
         treatments.Add(treatment);
@@ -277,8 +300,12 @@ public class TreatmentsTrigger
 
         double overlayQuantity = quantity;
         double repairQuantity = quantity * Math.Min(100, segment.PavementDistressIndex) / 100;
-        double acOverlayUnitRate = _frameworkModel.TreatmentTypes["ThinAC_P"].UnitRate;
-        double acRepairUnitRate = _frameworkModel.TreatmentTypes["HMaint_AC"].UnitRate;
+        
+        if (!_unitRateSet.ContainsKey("ThinAC_P")) throw new Exception($"Unit rate for treatment {"ThinAC_P"} not found in lookup sets.");
+        double acOverlayUnitRate = Convert.ToDouble(_unitRateSet["ThinAC_P"]);
+        
+        if (!_unitRateSet.ContainsKey("HMaint_AC")) throw new Exception($"Unit rate for treatment {"HMaint_AC"} not found in lookup sets.");
+        double acRepairUnitRate = Convert.ToDouble(_unitRateSet["HMaint_AC"]);
 
         double overlayCost = overlayQuantity * acOverlayUnitRate;
         double repairCost = repairQuantity * acRepairUnitRate;
@@ -286,15 +313,12 @@ public class TreatmentsTrigger
         double totalCost = overlayCost + repairCost;
 
         double dummyArea = totalCost; // Dummy area which is effectively the cost
+                        
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
 
-        // Check to ensure that the dummy rate for the combined treatment is 1.0
-        double dummyUnitRate = _frameworkModel.TreatmentTypes["ThinAC_H"].UnitRate;
-        if (dummyUnitRate != 1.0)
-        {
-            throw new InvalidOperationException($"Dummy unit rate for ThinAC treatment which combined overlay and repairs should be 1.0, but it is {dummyUnitRate}");
-        }
-
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, dummyArea, false, reason, comment);
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: dummyArea, unitRate: unitRate,
+                                                            false, reason, comment);
 
         // Assign the relative fractions of the cost to the appropriate budget categories
         decimal repairFraction = Convert.ToDecimal(repairCost / totalCost);
@@ -393,8 +417,12 @@ public class TreatmentsTrigger
         string reason = $"SLA={Math.Round(segment.SurfaceAchievedLifePercent, 1)}";
         string comment = $"PDI={Math.Round(pdi, 1)}, TSS={Math.Round(tssScore, 2)}";
 
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+
         double quantity = segment.AreaSquareMetre;
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, false, reason, comment);
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: quantity, unitRate: unitRate,
+                                                            false, reason, comment);
         treatment.TreatmentSuitabilityScore = tssScore;
         treatments.Add(treatment);
     }
@@ -422,9 +450,13 @@ public class TreatmentsTrigger
 
         string reason = $"SLA={Math.Round(segment.SurfaceAchievedLifePercent, 1)}";
         string comment = $"PDI={Math.Round(pdi, 1)}, TSS={Math.Round(tssScore, 2)}";
+        
+        if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
+        double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
 
         double quantity = segment.AreaSquareMetre * treatmentAreaFraction;
-        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity, false, reason, comment);
+        TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: quantity, unitRate: unitRate,
+                                                            false, reason, comment);
         treatment.TreatmentSuitabilityScore = tssScore;
         return treatment;
     }

@@ -13,7 +13,7 @@ public class TreatmentsTrigger
 {
     private ModelBase _frameworkModel;
     private RoadNetworkModel _domainModel;
-    Dictionary<string, object> _unitRateSet;
+    Dictionary<string, object> _unitRateSet = null!;
 
     public TreatmentsTrigger(ModelBase frameworkModel, RoadNetworkModel domainModel)
     {
@@ -66,11 +66,6 @@ public class TreatmentsTrigger
 
         //---------------------------------------------------------------------------------------------------------------------------------
         //---------------------------------------------------------------------------------------------------------------------------------
-
-        if (period < 3 && triggeredTreatments.Count > 0)
-        {
-            int kk = 0;
-        }
 
         return triggeredTreatments;
     }
@@ -339,11 +334,6 @@ public class TreatmentsTrigger
     {
         double presealAreaFraction = 0.0; // Default value
 
-        if (segment.ElementIndex == 3035 && iPeriod > 6)
-        {
-            int kk = 0;
-        }
-
         if (segment.NextSurfaceIsChipSeal == true) return;
 
         int periodsToLastNonRoutineTreatment = this.PeriodsToLastTreatmentNotRoutineMaintenance(infoFromModel, iPeriod);
@@ -367,7 +357,7 @@ public class TreatmentsTrigger
         presealAreaFraction = Convert.ToDouble(presealAreaFractionLookup.Evaluate(paramVals));
         if (presealAreaFraction <= 0.0) return; // If preseal area fraction is zero or negative, do not add a treatment
 
-        TreatmentInstance treatment = this.GetPresealTreatment(segment, iPeriod, "HMaint_AC", presealAreaFraction);
+        TreatmentInstance? treatment = this.GetPresealTreatment(segment, iPeriod, "HMaint_AC", presealAreaFraction);
         if (treatment is not null)
         {
             treatments.Add(treatment);
@@ -390,7 +380,7 @@ public class TreatmentsTrigger
         presealAreaFraction = Convert.ToDouble(presealAreaFractionLookup.Evaluate(paramVals));
         if (presealAreaFraction <= 0.0) return; // If preseal area fraction is zero or negative, do not add a treatment
         
-        TreatmentInstance treatment = this.GetPresealTreatment(segment, iPeriod, "PreSeal", presealAreaFraction);
+        TreatmentInstance? treatment = this.GetPresealTreatment(segment, iPeriod, "PreSeal", presealAreaFraction);
         if (treatment is not null) treatments.Add(treatment);
 
     }
@@ -427,7 +417,7 @@ public class TreatmentsTrigger
         treatments.Add(treatment);
     }
 
-    private TreatmentInstance GetPresealTreatment(RoadSegment segment, int iPeriod, string treatmentName, double treatmentAreaFraction)
+    private TreatmentInstance? GetPresealTreatment(RoadSegment segment, int iPeriod, string treatmentName, double treatmentAreaFraction)
     {
         double tssScore = 0;
         if (segment.CanRehabFlag == true)
@@ -467,7 +457,7 @@ public class TreatmentsTrigger
 
         List<TreatmentInstance> previousTreatments = (List<TreatmentInstance>)infoFromModel["previous_treatments"];
 
-        TreatmentInstance lastNonRoutineMaintenanceTreatment = null;
+        TreatmentInstance? lastNonRoutineMaintenanceTreatment = null;
 
         // Loop over all previous treatments to find the most recent non-routine maintenance treatment
         int minTreatmentPeriod = int.MaxValue;

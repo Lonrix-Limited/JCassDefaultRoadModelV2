@@ -19,12 +19,6 @@ public class Initialiser
 
     public RoadSegment InitialiseSegment(int iElemIndex)
     {
-
-        if (iElemIndex == 8426)
-        {
-            int kk = 9;
-        }
-
         // Create a new RoadSegment object based purely on the raw data provided in the string array.
         RoadSegment segment = RoadSegmentFactory.GetFromRawData(_frameworkModel, iElemIndex);
 

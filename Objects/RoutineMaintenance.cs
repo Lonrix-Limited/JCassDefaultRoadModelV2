@@ -10,7 +10,7 @@ public static class RoutineMaintenance
     {
         // Note that maintenance cost calculation already checks if the segment is AC or Chipseal
         // and that the PDI is over the threshold specified for maintenance in lookups
-        if (segment.MaintenanceCostPerKm <= 0) { return null; }
+        if (segment.MaintenanceCostPerKm <= 0) { return null!; }
      
         double cost = segment.MaintenanceCostPerKm * (segment.LengthInMetre / 1000);
         double quantity = cost / 1.0;  //Unit rate is 1.0

@@ -36,7 +36,7 @@ public class RoadSegment
     /// <summary>
     /// Segment identifier. Maps to input column "file_seg_name".
     /// </summary>
-    public string SegmentName { get; set; }
+    public string SegmentName { get; set; } = string.Empty;
 
     /// <summary>
     /// Section ID. Maps to "file_section_id".
@@ -46,7 +46,7 @@ public class RoadSegment
     /// <summary>
     /// Name of the section. Maps to "file_section_name".
     /// </summary>
-    public string SectionName { get; set; }
+    public string SectionName { get; set; } = string.Empty;
 
     /// <summary>
     /// Start metre of the segment. Maps to "file_loc_from".
@@ -61,7 +61,7 @@ public class RoadSegment
     /// <summary>
     /// Lane code. Maps to "file_lane_name".
     /// </summary>
-    public string LaneCode { get; set; }
+    public string LaneCode { get; set; } = string.Empty;
 
     #endregion
 
@@ -111,7 +111,7 @@ public class RoadSegment
     
     #region Surface and Pavement Properties
 
-    private string _surfaceClass;
+    private string _surfaceClass = string.Empty;
 
     /// <summary>
     /// Surface class ('cs', 'ac', 'blocks', 'concrete', 'other').
@@ -119,7 +119,7 @@ public class RoadSegment
     public string SurfaceClass
     {
         get => _surfaceClass;
-        set => _surfaceClass = value?.ToLower();
+        set => _surfaceClass = value?.ToLower() ?? string.Empty;
     }
 
     /// <summary>
@@ -161,12 +161,12 @@ public class RoadSegment
     /// <summary>
     /// Replacement surfacing type. Could be 'ac', 'cs', 'blocks', 'concrete' etc.
     /// </summary>
-    public string NextSurface { get; set; }
+    public string NextSurface { get; set; } = string.Empty;
 
     /// <summary>
     /// Surfacing date as a text/string value in dd/mm/yyyy format.
     /// </summary>
-    public string SurfacingDateString { get; set; }
+    public string SurfacingDateString { get; set; } = string.Empty;
 
     /// <summary>
     /// Surfacing date in fractional years, calculated from the SurfacingDateString during Initialisation.
@@ -210,7 +210,7 @@ public class RoadSegment
     /// <summary>
     /// Surfacing material.
     /// </summary>
-    public string SurfaceMaterial { get; set; }
+    public string SurfaceMaterial { get; set; } = string.Empty;
 
     /// <summary>
     /// Surfacing expected life (years) from RAMM.
@@ -290,7 +290,7 @@ public class RoadSegment
     /// <summary>
     /// Pavement construction date as a text/string value in dd/mm/yyyy format.
     /// </summary>
-    public string PavementDateString { get; set; }
+    public string PavementDateString { get; set; } = string.Empty;
 
     /// <summary>
     /// Pavement Age in fractional years, calculated from the PavementDateString during Initialisation.
@@ -343,9 +343,9 @@ public class RoadSegment
 
     #region ONRC and Carriageway Attributes
 
-    private string _urbanRural;
-    private string _onrc;    
-    private string _roadClass;
+    private string _urbanRural = string.Empty;
+    private string _onrc = string.Empty;
+    private string _roadClass = string.Empty;
 
     /// <summary>
     /// Urban/Rural flag.
@@ -353,7 +353,7 @@ public class RoadSegment
     public string UrbanRural
     {
         get => _urbanRural;
-        set => _urbanRural = value?.ToLower();
+        set => _urbanRural = value?.ToLower() ?? string.Empty;
     }
 
     /// <summary>
@@ -362,9 +362,9 @@ public class RoadSegment
     public string ONRC
     {
         get => _onrc;
-        set => _onrc = value?.ToLower();
+        set => _onrc = value?.ToLower() ?? string.Empty;
     }
-        
+
     /// <summary>
     /// Road class based on ONRC value mapped to a Road Class in lookup set 'road_class'. Note: this does NOT
     /// map to the (now deprecated) input column "file_road_class" as that column contains client-variant values.
@@ -372,7 +372,7 @@ public class RoadSegment
     public string RoadClass
     {
         get => _roadClass;
-        set => _roadClass = value?.ToLower();
+        set => _roadClass = value?.ToLower() ?? string.Empty;
     }
 
     
@@ -522,12 +522,12 @@ public class RoadSegment
     /// HSD survey date as a string in dd/mm/yyyy format. Do not use this
     /// after initialitation - use the RutParameterValue property instead.
     /// </summary>
-    public string RutSurveyDateString { get; set; }
+    public string RutSurveyDateString { get; set; } = string.Empty;
 
     /// <summary>
     /// Roughness segment survey date as string in dd/mm/yyyy format.
     /// </summary>
-    public string RoughnessSurveyDateString { get; set; }
+    public string RoughnessSurveyDateString { get; set; } = string.Empty;
 
     /// <summary>
     /// NAASRA 85th percentile roughness.
@@ -644,7 +644,7 @@ public class RoadSegment
     /// <summary>
     /// Condition survey date as string in dd/mm/yyyy format.
     /// </summary>
-    public string ConditionSurveyDateString { get; set; }
+    public string ConditionSurveyDateString { get; set; } = string.Empty;
 
     /// <summary>
     /// Percentage of flushing.
@@ -688,7 +688,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string FlushingModelInfo { get; set; }
+    public string FlushingModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -696,7 +696,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string EdgeBreakModelInfo { get; set; }
+    public string EdgeBreakModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -704,7 +704,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string ScabbingModelInfo { get; set; }
+    public string ScabbingModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -712,7 +712,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string LTCracksModelInfo { get; set; }
+    public string LTCracksModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -720,7 +720,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string MeshCrackModelInfo { get; set; }
+    public string MeshCrackModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -728,7 +728,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string ShovingModelInfo { get; set; }
+    public string ShovingModelInfo { get; set; } = string.Empty;
 
     /// <summary>
     /// Coded information on the current values for the S-curve model for this distress. Values are stored as:
@@ -736,7 +736,7 @@ public class RoadSegment
     /// where: AADI is the Age at Distress Initiation, InitialValue is the percent distress observed right
     /// after initiation, and T100 is the time it takes for the distress to reach 100% of the segment area.
     /// </summary>
-    public string PotholeModelInfo { get; set; }
+    public string PotholeModelInfo { get; set; } = string.Empty;
 
     #endregion
 

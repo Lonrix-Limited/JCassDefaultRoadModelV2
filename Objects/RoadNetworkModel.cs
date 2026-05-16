@@ -6,21 +6,21 @@ namespace JCassDefaultRoadModel.Objects;
 
 public class RoadNetworkModel : DomainModelBase
 {
-    public Constants Constants { get; set; }
-    
-    private Initialiser _initialiser { get; set; }
-    private Resetter _resetter { get; set; }
-    private Incrementer _incrementer { get; set; }
+    public Constants Constants { get; set; } = null!;
 
-    public FlushingModel FlushingModel;
-    public EdgeBreakModel EdgeBreakModel;
-    public ScabbingModel ScabbingModel;
-    public LTCracksModel LTCracksModel;    
-    public MeshCrackModel MeshCrackModel;
-    public ShovingModel ShovingModel;
-    public PotholeModel PotholeModel;
+    private Initialiser _initialiser { get; set; } = null!;
+    private Resetter _resetter { get; set; } = null!;
+    private Incrementer _incrementer { get; set; } = null!;
 
-    public Dictionary<string, TreatmentStrategy> CandidateStrategies;
+    public FlushingModel FlushingModel = null!;
+    public EdgeBreakModel EdgeBreakModel = null!;
+    public ScabbingModel ScabbingModel = null!;
+    public LTCracksModel LTCracksModel = null!;
+    public MeshCrackModel MeshCrackModel = null!;
+    public ShovingModel ShovingModel = null!;
+    public PotholeModel PotholeModel = null!;
+
+    public Dictionary<string, TreatmentStrategy> CandidateStrategies = null!;
 
     public RoadNetworkModel()
     {
@@ -91,11 +91,6 @@ public class RoadNetworkModel : DomainModelBase
     {
         try
         {
-            if (iElemIndex == 8426)
-            {
-                int kk = 9;
-            }
-
             Dictionary<string, object> infoFromModel = model.GetSpecialPlaceholderValues(iElemIndex, 0);
             RoadSegment segment = _initialiser.InitialiseSegment(iElemIndex);
 
@@ -133,11 +128,6 @@ public class RoadNetworkModel : DomainModelBase
     {
         try
         {
-            if (iElemIndex == 456)
-            {
-                int kk = 9;
-            }
-            
             //var (numPrevValues, textPrevValues) = model.GetParameterValues(iElemIndex, iPeriod - 1);
 
             Dictionary<string, object> infoFromModel = model.GetSpecialPlaceholderValues(iElemIndex, iPeriod, treatment);
@@ -176,11 +166,6 @@ public class RoadNetworkModel : DomainModelBase
     {
         try
         {
-            if (iElemIndex == 89 && iPeriod == 1)
-            {
-                int kk = 9;
-            }
-
             //var (numPrevValues, textPrevValues) = model.GetParameterValues(iElemIndex, iPeriod - 1);
 
             Dictionary<string, object> infoFromModel = model.GetSpecialPlaceholderValues(iElemIndex, iPeriod, null);
@@ -221,11 +206,6 @@ public class RoadNetworkModel : DomainModelBase
     {
         try
         {
-            if (iElemIndex == 3 && iPeriod == 32)
-            {
-                int kk = 0;
-            }
-
             Dictionary<string, object> infoFromModel = model.GetSpecialPlaceholderValues(iElemIndex, iPeriod, null);
 
             RoadSegment segment = RoadSegmentFactory.GetFromModel(this.model, numInputs, textInputs, numModParamValues, textModParamValues, iElemIndex, iPeriod);            

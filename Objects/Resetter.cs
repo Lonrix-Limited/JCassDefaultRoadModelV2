@@ -30,11 +30,6 @@ public class Resetter
         bool isRehab = treatmentName.StartsWith("rehab");
         bool isPreseal = treatmentName.StartsWith("hmaint") || treatmentName.StartsWith("preseal");
 
-        if (treatmentName == "chipseal_h")
-        {
-            int kk = 9;
-        }
-        
         // Reset (or increment where not applicable) all properties related to model parameters
         // Keep the code same order as the model parameter list
 

@@ -13,26 +13,26 @@ public abstract class SCurveDistress
     /// Piecewise linear model for reset curve for Chip Seal historic data. That is, for resetting the last observed
     /// distress if the distress survey is outdated. This curve is used to determine the initial value for the distress after a resurfacing or holding action.
     /// </summary>
-    protected PieceWiseLinearModelGeneric _resetCurveForCS_HistoricData;
+    protected PieceWiseLinearModelGeneric _resetCurveForCS_HistoricData = null!;
 
     /// <summary>
     /// Piecewise linear model for reset curve for ĀC historic data. That is, for resetting the last observed
     /// distress if the distress survey is outdated. This curve is used to determine the initial value for the distress after a resurfacing or holding action.
     /// </summary>
-    protected PieceWiseLinearModelGeneric _resetCurveForAC_HistoricData;
+    protected PieceWiseLinearModelGeneric _resetCurveForAC_HistoricData = null!;
 
 
     /// <summary>
     /// Piecewise linear model that determines the penalty factor to apply to the expected AADI and T100 values when a RESURFACING is placed
     /// over existing distress. The X-values are the distress values before the resurfacing, and the Y-values are the penalty factor to apply.
     /// </summary>
-    protected PieceWiseLinearModelGeneric _resetPenaltyCurveForResurfacing;
+    protected PieceWiseLinearModelGeneric _resetPenaltyCurveForResurfacing = null!;
 
     /// <summary>
     /// Piecewise linear model that determines the penalty factor to apply to the expected AADI and T100 values when a HOLDING ACTION is placed
     /// over existing distress. The X-values are the distress values before the resurfacing, and the Y-values are the penalty factor to apply.
     /// </summary>
-    protected PieceWiseLinearModelGeneric _resetPenaltyCurveForHoldingAction;
+    protected PieceWiseLinearModelGeneric _resetPenaltyCurveForHoldingAction = null!;
 
 
     protected ModelBase _frameworkModel;
@@ -121,8 +121,8 @@ public abstract class SCurveDistress
             _InitValExpected = Convert.ToDouble(_frameworkModel.Lookups[distressLookupSetCode]["iv_expected"]);
 
             // Initialize the reset curves for Mesh Cracks
-            string resetCurveCS = _frameworkModel.Lookups[distressLookupSetCode]["historic_reset_cs"].ToString();
-            string resetCurveAC = _frameworkModel.Lookups[distressLookupSetCode]["historic_reset_ac"].ToString();
+            string resetCurveCS = _frameworkModel.Lookups[distressLookupSetCode]["historic_reset_cs"].ToString()!;
+            string resetCurveAC = _frameworkModel.Lookups[distressLookupSetCode]["historic_reset_ac"].ToString()!;
             _resetCurveForCS_HistoricData = new PieceWiseLinearModelGeneric(resetCurveCS, false);
             _resetCurveForAC_HistoricData = new PieceWiseLinearModelGeneric(resetCurveAC, false);
 
@@ -238,12 +238,6 @@ public abstract class SCurveDistress
     /// <returns>Values in concatenated string with [AADI_InitialValue_T100]</returns>
     public string GetCalibratedInitialSetupValues(RoadSegment segment, double observedValue, double errorTolerance)
     {
-        //Debug for specific element. Change element index as needed
-        if (segment.ElementIndex == 3)
-        {
-            int kk = 9;   //put breakpoint on this line
-        }
-
         double surfaceExpectedLife = segment.SurfaceExpectedLife;
         double distressProb = this.DistressProbability(segment);
 
@@ -339,11 +333,7 @@ public abstract class SCurveDistress
 
     protected double GetIncrement(RoadSegment segment, double currentValue, string sCurveSetupCode)
     {
-        if (segment.ElementIndex == 5)
-        {
-            int kk = 9;   //put breakpoint on this line
-        }
-        // Parse the setup code values 
+        // Parse the setup code values
         string[] parts = sCurveSetupCode.Split('_');
         if (parts.Length != 3)
         {

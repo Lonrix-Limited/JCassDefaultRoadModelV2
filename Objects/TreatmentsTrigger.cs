@@ -311,6 +311,7 @@ public class TreatmentsTrigger
                         
         if (!_unitRateSet.ContainsKey(treatmentName)) throw new Exception($"Unit rate for treatment {treatmentName} not found in lookup sets.");
         double unitRate = Convert.ToDouble(_unitRateSet[treatmentName]);
+        if (unitRate != 1.0) throw new Exception($"Unit rate for treatment {treatmentName} should be 1.0, but found {unitRate}. This is because the cost is calculated based on the relative fractions of the overlay and repair costs.");
 
         TreatmentInstance treatment = new TreatmentInstance(segment.ElementIndex, treatmentName, iPeriod, quantity: dummyArea, unitRate: unitRate,
                                                             false, reason, comment);

@@ -8,7 +8,8 @@
   </PropertyGroup>
 
 	<Target Name="CustomCopyDll" AfterTargets="Build">
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\zz_trash\cassandra_testing\domain_model\" SkipUnchangedFiles="true" />
+		<!-- Drop folder on Fritz's machine; skipped where it does not exist. -->
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\zz_trash\cassandra_testing\domain_model\" SkipUnchangedFiles="true" Condition="Exists('C:\zz_trash\cassandra_testing\domain_model\')" />
 		<!--<Copy SourceFiles="$(TargetPath)" DestinationFolder="C:\zz_trash\cass_new\cassandra\domain_model\" SkipUnchangedFiles="true" />-->
 	</Target>
 
